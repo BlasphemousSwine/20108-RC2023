@@ -20,35 +20,56 @@
  */
 
 package org.firstinspires.ftc.teamcode.auton;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.Drivetrain;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
 
 
 @TeleOp
-public class HurricaneTeleOp extends LinearOpMode
+public class HurricaneTeleOpLift extends LinearOpMode
 {
+
+    double target = 0;
+    double error;
+
     @Override
     public void runOpMode() {
-        Drivetrain drivetrain = new Drivetrain(hardwareMap);
-
+        DcMotor lift1 = hardwareMap.dcMotor.get("lift1");
+        DcMotor lift2 = hardwareMap.dcMotor.get("lift2");
+        lift1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         waitForStart();
 
         while (opModeIsActive()) {
-            drivetrain.setVelocity[0] = -gamepad1.left_stick_x;
-            drivetrain.setVelocity[1] = -gamepad1.left_stick_y;
-            drivetrain.setVelocity[2] = gamepad1.right_stick_x;
-            drivetrain.update();
-            telemetry.addLine(String.valueOf(drivetrain.position[0]));
-            telemetry.addLine(String.valueOf(drivetrain.position[1]));
-            telemetry.addLine(String.valueOf(drivetrain.position[2]));
-            telemetry.update();
-            if(gamepad1.start) {
-                drivetrain.initializeIMU();
+            if (gamepad1.right_bumper){
+                target = -1800;
+            }
+            else if (gamepad1.left_bumper){
+                target = -100;
             }
 
+            error = target - lift1.getCurrentPosition();
+            if (Math.abs(error) >= 70){
+                lift1.setPower(-(error/180000));
+                lift2.setPower(-(error/180000));
+            }
+            else{
+                lift1.setPower(0);
+                lift2.setPower(0);
+            }
 
-
+            telemetry.addLine(String.valueOf(lift1.getCurrentPosition()));
+            telemetry.addLine(String.valueOf(lift2.getCurrentPosition()));
+            telemetry.addLine(String.valueOf(error));
+            telemetry.addLine(String.valueOf(-(error/180000)));
+            telemetry.update();
         }
     }
+
+
 }
