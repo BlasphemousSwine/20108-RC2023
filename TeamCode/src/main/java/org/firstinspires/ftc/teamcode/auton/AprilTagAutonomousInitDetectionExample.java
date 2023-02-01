@@ -36,6 +36,7 @@ import org.firstinspires.ftc.teamcode.Drivetrain;
 import org.firstinspires.ftc.teamcode.Drivetrain1;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.Drivetrain1;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -75,20 +76,14 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
     SampleMecanumDrive drivetrain;
     DcMotor lift1;
     DcMotor lift2;
-    private void score(){
-        sleep(1);
-        Trajectory goBackward = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
-                .back(4.2)
-                .build();
-        drivetrain.followTrajectory(goBackward);
-        drivetrain.turn(135);
-        while (lift1.getCurrentPosition() > -1200) {
+    public void lift(){
+        while (lift1.getCurrentPosition() > -1800) {
             lift1.setPower(0.05);
             lift2.setPower(0.05);
         }
         lift1.setPower(0);
         lift2.setPower(0);
-        sleep(1);
+        sleep(1000);
         while (lift1.getCurrentPosition() < 0) {
             lift1.setPower(-0.01);
             lift2.setPower(-0.01);
@@ -96,30 +91,46 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         lift1.setPower(0);
         lift2.setPower(0);
     }
+
     private void score2(){
         Trajectory goForward = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
-                .forward(2*2.4)
+                .forward(48)
+                .build();
+        Trajectory goForward1 = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
+                .forward(22)
+                .build();
+        Trajectory goForward2 = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
+                .forward(10)
+                .build();
+        Trajectory goBackward = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
+                .back(22)
+                .build();
+        Trajectory goBackward1 = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
+                .back(24)
+                .build();
+        Trajectory goBackward2 = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
+                .back(10)
                 .build();
         drivetrain.followTrajectory(goForward);
-        drivetrain.turn(-90);
-        Trajectory goForward2 = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
-                .forward(2)
-                .build();
+        drivetrain.turn(Math.toRadians(45));
         drivetrain.followTrajectory(goForward2);
-        score();
-        Trajectory goForward4 = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
-                .forward(4.2)
-                .build();
-        drivetrain.followTrajectory(goForward4);
-        score();
-        Trajectory goForward5 = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
-                .forward(2.2)
-                .build();
-        drivetrain.followTrajectory(goForward5);
-        Trajectory goRight = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
-                .strafeRight(2.7)
-                .build();
-        drivetrain.followTrajectory(goRight);
+        lift();
+        drivetrain.followTrajectory(goBackward2);
+        drivetrain.turn(Math.toRadians(-135));
+        drivetrain.followTrajectory(goForward1);
+        sleep(500);
+        drivetrain.followTrajectory(goBackward);
+        drivetrain.turn(Math.toRadians(135));
+        drivetrain.followTrajectory(goForward2);
+        lift();
+        drivetrain.followTrajectory(goBackward2);
+        //drivetrain.turn(Math.toRadians(-135));
+        //drivetrain.followTrajectory(goForward1);
+        //sleep(500);
+        //drivetrain.followTrajectory(goBackward);
+        //drivetrain.turn(Math.toRadians(135));
+        //lift();
+        drivetrain.turn(Math.toRadians(55));
     }
     @Override
     public void runOpMode() throws InterruptedException {
@@ -228,18 +239,18 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 
         if(tagOfInterest == null || tagOfInterest.id == LEFT){
             score2();
-            Trajectory goBackward = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
-                    .back(2.2)
+            Trajectory goForward = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
+                    .forward(24)
                     .build();
-            drivetrain.followTrajectory(goBackward);
+            drivetrain.followTrajectory(goForward);
         }else if (tagOfInterest.id == MIDDLE){
             score2();
         }else {
             score2();
-            Trajectory goForward = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
-                    .forward(2.2)
+            Trajectory goBackward = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
+                    .back(24)
                     .build();
-            drivetrain.followTrajectory(goForward);
+            drivetrain.followTrajectory(goBackward);
         }
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
         while (opModeIsActive()) {sleep(20);}
@@ -248,6 +259,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
     void tagToTelemetry(AprilTagDetection detection)
     {
         telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
+        telemetry.addLine(String.format("\nLift1", lift1.getCurrentPosition()));
         telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
         telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
         telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));

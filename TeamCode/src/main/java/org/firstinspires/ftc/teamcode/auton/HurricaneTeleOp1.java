@@ -33,7 +33,6 @@ public class HurricaneTeleOp1 extends LinearOpMode {
     @Override
 
     public void runOpMode() {
-        double imuright = 0;
         double forwardright = 0;
         double forwardleft = 0;
         double backleft = 0;
@@ -44,6 +43,7 @@ public class HurricaneTeleOp1 extends LinearOpMode {
         double imuforward = drivetrain.imu.getAngularOrientation().firstAngle;
         double imuleft = drivetrain.imu.getAngularOrientation().firstAngle+90;
         double imuback = drivetrain.imu.getAngularOrientation().firstAngle+180;
+        double imuright = drivetrain.imu.getAngularOrientation().firstAngle - 90;
         waitForStart();
         while (opModeIsActive()) {
             if (gamepad1.start) {
