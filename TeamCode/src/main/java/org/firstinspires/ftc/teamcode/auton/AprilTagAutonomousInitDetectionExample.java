@@ -91,7 +91,40 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         lift1.setPower(0);
         lift2.setPower(0);
     }
-
+    private void scorespline(){
+        TrajectorySequence score = drivetrain.trajectorySequenceBuilder(new Pose2d(-35, 61, Math.toRadians(270)))
+            .forward(30)
+                .splineTo(new Vector2d(-30, 13), Math.toRadians(325))
+                .setReversed(true)
+                .splineTo(new Vector2d(-35, 35), Math.toRadians(90))
+                .setReversed(false)
+                .splineTo(new Vector2d(-40, 17), Math.toRadians(200))
+                .forward(10)
+                .build();
+        drivetrain.followTrajectorySequence(score);
+    }
+    private void score(){
+        TrajectorySequence score = drivetrain.trajectorySequenceBuilder(new Pose2d(-35, 61, Math.toRadians(270)))
+                .forward(45)
+                .turn(Math.toRadians(45))
+                .forward(10)
+                .back(10)
+                .turn(Math.toRadians(-135))
+                .forward(22)
+                .back(22)
+                .turn(Math.toRadians(135))
+                .forward(10)
+                .back(10)
+                .turn(Math.toRadians(-135))
+                .forward(22)
+                .back(22)
+                .turn(Math.toRadians(135))
+                .forward(10)
+                .back(10)
+                .turn(Math.toRadians(55))
+                .build();
+        drivetrain.followTrajectorySequence(score);
+    }
     private void score2(){
         Trajectory goForward = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
                 .forward(48)
@@ -238,13 +271,13 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         /* Actually do something useful */
 
         if(tagOfInterest == null || tagOfInterest.id == LEFT){
-            score2();
-            Trajectory goForward = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
-                    .forward(24)
-                    .build();
-            drivetrain.followTrajectory(goForward);
+            scorespline();
+            //Trajectory goForward = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
+            //        .forward(24)
+            //        .build();
+            //drivetrain.followTrajectory(goForward);
         }else if (tagOfInterest.id == MIDDLE){
-            score2();
+            score();
         }else {
             score2();
             Trajectory goBackward = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
