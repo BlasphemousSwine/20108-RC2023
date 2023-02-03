@@ -24,6 +24,8 @@ package org.firstinspires.ftc.teamcode.auton;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Drivetrain;
 import org.firstinspires.ftc.teamcode.Drivetrain1;
@@ -38,8 +40,24 @@ public class HurricaneTeleOp1 extends LinearOpMode {
         double backleft = 0;
         double backright = 0;
         double orientation = 1;
+        DcMotor lift1 = hardwareMap.dcMotor.get("lift1");
+        DcMotor lift2 = hardwareMap.dcMotor.get("lift2");
+        Servo leftlift = hardwareMap.servo.get("1");
+        Servo rightlift = hardwareMap.servo.get("2");
+        Servo servo3 = hardwareMap.servo.get("3");
+        Servo leftclaw = hardwareMap.servo.get("4");
+        Servo rightclaw = hardwareMap.servo.get("5");
+        lift1.setDirection(DcMotorSimple.Direction.REVERSE);
+        lift2.setDirection(DcMotorSimple.Direction.REVERSE);
+        lift1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Drivetrain1 drivetrain = new Drivetrain1(hardwareMap);
         drivetrain.initialize();
+        boolean lastRightBumper = gamepad1.right_bumper;
+        int liftpos = 0;
+        int claw = 0;
         double imuforward = drivetrain.imu.getAngularOrientation().firstAngle;
         double imuleft = drivetrain.imu.getAngularOrientation().firstAngle+90;
         double imuback = drivetrain.imu.getAngularOrientation().firstAngle+180;
@@ -96,9 +114,57 @@ public class HurricaneTeleOp1 extends LinearOpMode {
             }
 
             if(gamepad1.a) {
-                drivetrain.initmotors();
-
+                if (claw == 0){
+                    leftclaw.setPosition(1);
+                    rightclaw.setPosition(0);
+                    claw = 1;
+                }else {
+                    leftclaw.setPosition(0);
+                    rightclaw.setPosition(1);
+                    claw = 0;
+                }
             }
+            if (gamepad1.right_bumper && gamepad1.right_bumper != lastRightBumper){
+                leftlift.setPosition(0.9);
+                rightlift.setPosition(0.3);
+                liftpos += -600;
+                if (liftpos == -600) {
+                    lift1.setTargetPosition(liftpos);
+                    lift2.setTargetPosition(liftpos);
+                    lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    lift1.setPower(1);
+                    lift2.setPower(1);
+                }
+                else if (liftpos == -1200) {
+                    lift1.setTargetPosition(liftpos);
+                    lift2.setTargetPosition(liftpos);
+                    lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    lift1.setPower(1);
+                    lift2.setPower(1);
+                }
+                else {
+                    lift1.setTargetPosition(-1900);
+                    lift2.setTargetPosition(-1900);
+                    lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    lift1.setPower(1);
+                    lift2.setPower(1);
+                }
+            }
+            if(gamepad1.left_bumper){
+                leftlift.setPosition(0.3);
+                rightlift.setPosition(0.9);
+                liftpos = 0;
+                lift1.setTargetPosition(0);
+                lift2.setTargetPosition(0);
+                lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                lift1.setPower(1);
+                lift2.setPower(1);
+            }
+            lastRightBumper = gamepad1.right_bumper;
             telemetry.addLine(String.valueOf(drivetrain.imu.getAngularOrientation()));
             telemetry.addLine(String.valueOf(drivetrain.imu.getAngularOrientation()));
             telemetry.addLine(String.valueOf(drivetrain.imu.getAngularOrientation()));

@@ -16,24 +16,40 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-35, 61, Math.toRadians(270)))
-                        //        .forward(48)
-                        //        .turn(Math.toRadians(45))
-                        //        .forward(10)
-                        //        .back(10)
-                        //        .turn(Math.toRadians(-135))
-                        //        .forward(22)
-                        //        .back(22)
-                        //        .turn(Math.toRadians(135))
-                        //        .forward(10)
-                        //        .back(10)
-                        //        .turn(Math.toRadians(55))
-                                .forward(35)
-                                .splineTo(new Vector2d(-30, 8), Math.toRadians(315))
+                                .forward(30)
+                                //Junction
+                                .splineTo(new Vector2d(-30, 13), Math.toRadians(325))
                                 .setReversed(true)
-                                .splineTo(new Vector2d(-35, 27), Math.toRadians(90))
+                                //square2
+                                .splineTo(new Vector2d(-35, 40), Math.toRadians(90))
                                 .setReversed(false)
-                                .splineTo(new Vector2d(-40, 15), Math.toRadians(180))
-                                .forward(5)
+                                //Pickup
+                                .splineTo(new Vector2d(-40, 20), Math.toRadians(200))
+                                .forward(12)
+                                .setReversed(true)
+                                .back(14)
+                                //square2
+                                .splineTo(new Vector2d(-35, 40), Math.toRadians(90))
+                                .setReversed(false)
+                                //Junction
+                                .splineTo(new Vector2d(-32, 17), Math.toRadians(315))
+                                .setReversed(true)
+                                //square2
+                                .splineTo(new Vector2d(-35, 40), Math.toRadians(90))
+                                .setReversed(false)
+                                //Pickup
+                                .splineTo(new Vector2d(-40, 20), Math.toRadians(190))
+                                .forward(12)
+                                .setReversed(true)
+                                .back(14)
+                                //square2
+                                .splineTo(new Vector2d(-35, 37), Math.toRadians(90))
+                                .setReversed(false)
+                                //Junction
+                                .splineTo(new Vector2d(-32, 17), Math.toRadians(315))
+                                .setReversed(true)
+                                .splineTo(new Vector2d(-35, 19), Math.toRadians(180))
+                                .waitSeconds(2)
                                 .build()
                 );
         meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_OFFICIAL)

@@ -98,6 +98,5 @@ public class HurricaneTeleOpLift1 extends LinearOpMode
             telemetry.addLine(String.valueOf(target));
             telemetry.update();
         }
-
     }
 }
