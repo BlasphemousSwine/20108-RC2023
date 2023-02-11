@@ -44,7 +44,7 @@ public class HurricaneTeleOp1 extends LinearOpMode {
         DcMotor lift2 = hardwareMap.dcMotor.get("lift2");
         Servo leftlift = hardwareMap.servo.get("1");
         Servo rightlift = hardwareMap.servo.get("2");
-        Servo servo3 = hardwareMap.servo.get("3");
+        Servo clawpos = hardwareMap.servo.get("3");
         Servo leftclaw = hardwareMap.servo.get("4");
         Servo rightclaw = hardwareMap.servo.get("5");
         lift1.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -56,6 +56,7 @@ public class HurricaneTeleOp1 extends LinearOpMode {
         Drivetrain1 drivetrain = new Drivetrain1(hardwareMap);
         drivetrain.initialize();
         boolean lastRightBumper = gamepad1.right_bumper;
+        boolean lastA = gamepad1.a;
         int liftpos = 0;
         int claw = 0;
         double imuforward = drivetrain.imu.getAngularOrientation().firstAngle;
@@ -113,7 +114,7 @@ public class HurricaneTeleOp1 extends LinearOpMode {
                         gamepad1.right_stick_x * Math.abs(gamepad1.right_stick_x));
             }
 
-            if(gamepad1.a) {
+            if(gamepad1.a && gamepad1.a != lastA) {
                 if (claw == 0){
                     leftclaw.setPosition(1);
                     rightclaw.setPosition(0);
@@ -127,6 +128,7 @@ public class HurricaneTeleOp1 extends LinearOpMode {
             if (gamepad1.right_bumper && gamepad1.right_bumper != lastRightBumper){
                 leftlift.setPosition(0.9);
                 rightlift.setPosition(0.3);
+                clawpos.setPosition(0);
                 liftpos += -600;
                 if (liftpos == -600) {
                     lift1.setTargetPosition(liftpos);
@@ -154,8 +156,9 @@ public class HurricaneTeleOp1 extends LinearOpMode {
                 }
             }
             if(gamepad1.left_bumper){
-                leftlift.setPosition(0.3);
-                rightlift.setPosition(0.9);
+                clawpos.setPosition(0.5);
+                leftlift.setPosition(0.2);
+                rightlift.setPosition(1);
                 liftpos = 0;
                 lift1.setTargetPosition(0);
                 lift2.setTargetPosition(0);
@@ -163,6 +166,7 @@ public class HurricaneTeleOp1 extends LinearOpMode {
                 lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 lift1.setPower(1);
                 lift2.setPower(1);
+
             }
             lastRightBumper = gamepad1.right_bumper;
             telemetry.addLine(String.valueOf(drivetrain.imu.getAngularOrientation()));
