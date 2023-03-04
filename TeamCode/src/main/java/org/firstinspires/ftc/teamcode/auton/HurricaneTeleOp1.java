@@ -42,8 +42,8 @@ public class HurricaneTeleOp1 extends LinearOpMode {
         double orientation = 1;
         DcMotor lift1 = hardwareMap.dcMotor.get("lift1");
         DcMotor lift2 = hardwareMap.dcMotor.get("lift2");
-        Servo leftlift = hardwareMap.servo.get("1");
-        Servo rightlift = hardwareMap.servo.get("2");
+        Servo rightlift = hardwareMap.servo.get("1");
+        Servo leftlift = hardwareMap.servo.get("2");
         Servo clawpos = hardwareMap.servo.get("3");
         Servo leftclaw = hardwareMap.servo.get("4");
         Servo rightclaw = hardwareMap.servo.get("5");
@@ -126,8 +126,8 @@ public class HurricaneTeleOp1 extends LinearOpMode {
                 }
             }
             if (gamepad1.right_bumper && gamepad1.right_bumper != lastRightBumper){
-                leftlift.setPosition(0.9);
-                rightlift.setPosition(0.3);
+                leftlift.setPosition(0.95);
+                rightlift.setPosition(0.05);
                 clawpos.setPosition(0);
                 liftpos += -600;
                 if (liftpos == -600) {
@@ -147,8 +147,8 @@ public class HurricaneTeleOp1 extends LinearOpMode {
                     lift2.setPower(1);
                 }
                 else {
-                    lift1.setTargetPosition(-1900);
-                    lift2.setTargetPosition(-1900);
+                    lift1.setTargetPosition(-1750);
+                    lift2.setTargetPosition(-1750);
                     lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     lift1.setPower(1);
@@ -158,7 +158,7 @@ public class HurricaneTeleOp1 extends LinearOpMode {
             if(gamepad1.left_bumper){
                 clawpos.setPosition(0.5);
                 leftlift.setPosition(0.2);
-                rightlift.setPosition(1);
+                rightlift.setPosition(0.8);
                 liftpos = 0;
                 lift1.setTargetPosition(0);
                 lift2.setTargetPosition(0);

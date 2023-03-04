@@ -82,11 +82,11 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
     public void runOpMode() throws InterruptedException {
 
         drivetrain = new SampleMecanumDrive(hardwareMap);
-//        Servo leftlift = hardwareMap.servo.get("1");
-//        Servo rightlift = hardwareMap.servo.get("2");
-//        Servo clawpos = hardwareMap.servo.get("3");
-//        Servo leftclaw = hardwareMap.servo.get("4");
-//        Servo rightclaw = hardwareMap.servo.get("5");
+        Servo rightlift = hardwareMap.servo.get("1");
+        Servo leftlift = hardwareMap.servo.get("2");
+        Servo clawpos = hardwareMap.servo.get("3");
+        Servo leftclaw = hardwareMap.servo.get("4");
+        Servo rightclaw = hardwareMap.servo.get("5");
         lift1 = hardwareMap.get(DcMotorEx.class, "lift1");
         lift2 = hardwareMap.get(DcMotorEx.class, "lift2");
         lift1.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -95,16 +95,122 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         lift2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        clawpos.setPosition(0.5);
-//        leftlift.setPosition(0.2);
-//        rightlift.setPosition(1);
-//        leftclaw.setPosition(1);
-//        rightclaw.setPosition(0);
+        clawpos.setPosition(0);
+        leftlift.setPosition(1);
+        rightlift.setPosition(0);
+        leftclaw.setPosition(1);
+        rightclaw.setPosition(0);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
         TrajectorySequence score = drivetrain.trajectorySequenceBuilder(new Pose2d(-35, 61, Math.toRadians(270)))
+                .addDisplacementMarker(() -> {
+                    lift1.setTargetPosition(-1800);
+                    lift2.setTargetPosition(-1800);
+                    lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    lift1.setPower(1);
+                    lift2.setPower(1);
+                    clawpos.setPosition(0);
+                    leftlift.setPosition(0.95);
+                    rightlift.setPosition(0.05);
+                })
                 .forward(30)
+                //Junction
+                .splineTo(new Vector2d(-23, -7), Math.toRadians(350))
+                .addDisplacementMarker(() -> {
+                    rightclaw.setPosition(1);
+                    leftclaw.setPosition(0);
+                })
+                .waitSeconds(1)
+//                .addDisplacementMarker(() -> {
+//                    leftclaw.setPosition(0);
+//                    rightclaw.setPosition(1);
+//                    lift1.setTargetPosition(0);
+//                    lift2.setTargetPosition(0);
+//                    lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                    lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                    lift1.setPower(1);
+//                    lift2.setPower(1);
+//                    leftlift.setPosition(0.7);
+//                    rightlift.setPosition(0.5);
+//                })
+                .setReversed(true)
+                //square2
+//                .splineTo(new Vector2d(-35, 15), Math.toRadians(90))
+//                .setReversed(false)
+//                //Pickup
+//                .splineTo(new Vector2d(-40, 20), Math.toRadians(200))
+//                .forward(14)
+////                .addDisplacementMarker(() -> {
+////                    leftclaw.setPosition(1);
+////                    rightclaw.setPosition(0);
+////                })
+//                .setReversed(true)
+//                .back(12)
+//                //square2
+//                .splineTo(new Vector2d(-38, 40), Math.toRadians(90))
+////                .addDisplacementMarker(() -> {
+////                    lift1.setTargetPosition(-1800);
+////                    lift2.setTargetPosition(-1800);
+////                    lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+////                    lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+////                    lift1.setPower(1);
+////                    lift2.setPower(1);
+////                    leftlift.setPosition(0.9);
+////                    rightlift.setPosition(0.3);
+////                })
+//                .setReversed(false)
+//                //Junction
+//                .splineTo(new Vector2d(-30.5, 15.5), Math.toRadians(305))
+////                .addDisplacementMarker(() -> {
+////                    leftclaw.setPosition(0);
+////                    rightclaw.setPosition(1);
+////                })
+//                .setReversed(true)
+//                //square2
+////                .addDisplacementMarker(() -> {
+////                    lift1.setTargetPosition(0);
+////                    lift2.setTargetPosition(0);
+////                    lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+////                    lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+////                    lift1.setPower(1);
+////                    lift2.setPower(1);
+////                    leftlift.setPosition(0.3);
+////                    rightlift.setPosition(0.9);
+////                })
+//                .splineTo(new Vector2d(-37, 40), Math.toRadians(90))
+//                .setReversed(false)
+//                //Pickup
+//                .splineTo(new Vector2d(-40, 20), Math.toRadians(190))
+//                .forward(12)
+////                .addDisplacementMarker(() -> {
+////                    leftclaw.setPosition(1);
+////                    rightclaw.setPosition(0);
+////                })
+//                .setReversed(true)
+//                .back(10)
+//                //square2
+//                .splineTo(new Vector2d(-35, 37), Math.toRadians(90))
+////                .addDisplacementMarker(() -> {
+////                    lift1.setTargetPosition(-1800);
+////                    lift2.setTargetPosition(-1800);
+////                    lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+////                    lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+////                    lift1.setPower(1);
+////                    lift2.setPower(1);
+////                    leftlift.setPosition(0.9);
+////                    rightlift.setPosition(0.3);
+////                })
+//                .setReversed(false)
+//                //Junction
+//                .splineTo(new Vector2d(-30.5, 15.5), Math.toRadians(300))
+////                .addDisplacementMarker(() -> {
+////                    leftclaw.setPosition(0);
+////                    rightclaw.setPosition(1);
+////                })
+//                .setReversed(true)
+                .splineTo(new Vector2d(-40, -5), Math.toRadians(200))
                 .build();
         camera.setPipeline(aprilTagDetectionPipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
@@ -201,15 +307,15 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         if(tagOfInterest == null || tagOfInterest.id == LEFT){
             drivetrain.followTrajectorySequence(score);
             Trajectory goForward = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
-                    .forward(22)
+                    .forward(40)
                     .build();
             drivetrain.followTrajectory(goForward);
         }else if (tagOfInterest.id == MIDDLE){
             drivetrain.followTrajectorySequence(score);
         }else {
             drivetrain.followTrajectorySequence(score);
-            Trajectory goRight = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
-                    .strafeRight
+            Trajectory goBackward = drivetrain.trajectoryBuilder(new Pose2d(0, 0, 0))
+                    .back(24)
                     .build();
             drivetrain.followTrajectory(goBackward);
         }
